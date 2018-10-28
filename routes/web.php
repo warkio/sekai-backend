@@ -21,9 +21,15 @@ Route::get("/threads", function(){
 
 Route::get("/categories", "CategoriesController@getCategories");
 Route::get("/categories/{id}", "CategoriesController@getCategoryInfo")->where(["id"=>"[0-9]+"]);
+Route::post("/categories", "CategoriesController@createCategory");
 
-Route::get("/sections", "CategoriesController@getSections");
-Route::get("/sections/{id}", "CategoriesController@getSectionInfo")->where(["id"=>"[0-9]+"]);
+Route::get("/sections", "SectionsController@getSections");
+Route::get("/sections/{id}", "SetionsController@getSectionInfo")->where(["id"=>"[0-9]+"]);
+Route::post("/sections", "SectionsController@createCategory");
+
+Route::get("/threads", "ThreadsController@getThreads");
+Route::get("/threads/{id}", "ThreadsController@getThreadInfo")->where(["id"=>"[0-9]+"]);
+Route::post("/threads", "ThreadsController@createThread");
 
 
 Auth::routes();

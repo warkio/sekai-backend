@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Thread;
 use App\Section;
 use App\utils\StringHelper;
+use Illuminate\Support\Facades\DB;
 
 class ThreadsController extends Controller
 {
@@ -39,10 +40,50 @@ class ThreadsController extends Controller
     }
 
     public function getThreads(Request $r){
+        $page = $r->has("page") && $r->input("page") > 0 ? $r->input("page") : 1;
+        $quantity = $r->has("quantity") ? $r->input("quantity") : 15;
+        $quantity = min(max($quantity, 1), 100);
 
+        $threads = DB::table("threads");
+        if($r->has("section-id") && is_int($r->input("section-id"))){
+            $threads = $threads->where("section_id","=",$r->input("section-id"));
+        }
+        $total = $threads->count();
+        $threads = $threads->limit($quantity)->offset(($page-1)*$quantity)->get();
+
+        $data = [
+            "total" => $total,
+            "content" => []
+        ];
+
+        foreach($threads as $index=>$content){
+            $data["content"][$index] = [
+                "id"=>$content->id,
+                "name"=>$content->name,
+                "userId"=>$content->user_id,
+                "isPinned"=>$content->is_pinned,
+                "slug"=>$content->slug,
+                "image"=>$content->image,
+                "color"=>$content->color,
+                "sectionId"=>$content->section_id
+            ];
+        }
+
+        return response()->json($data, 200);
     }
 
-    public function deleteThread(Request $r){
+    public function deleteThread(Request $r, int $threadId){
+        $thread = Section::find($threadId);
+        if(is_null($thread)){
+            return response()->json(["error"=>"Invalid id"], 400);
+        }
+        try{
+            $thread->delete();
+        }
+        catch (Exception $e){
+            return response()->json(["error"=>$e], 500);
+        }
 
+        return response()->json(["success"=>true], 200);
     }
 }

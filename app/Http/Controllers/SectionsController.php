@@ -92,6 +92,30 @@ class SectionsController extends Controller
     }
 
     /**
+     * Returns the sections, being possible to filter them by page and quantity
+     * @param Request $r
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getSectionInfo(Request $r, int $id){
+
+        $content = Section::find($id);
+        if(is_null($content)){
+            return response()->json(["error"=>"Section not found"], 404);
+        }
+
+        $data = [
+            "id"=>$content->id,
+            "name"=>$content->name,
+            "slug"=>$content->slug,
+            "image"=>$content->image,
+            "color"=>$content->color,
+            "categoryId"=>$content->category_id
+        ];
+
+        return response()->json($data, 200);
+    }
+
+    /**
      * Edits a determined section
      * @param Request $r
      * @param int $sectionId
