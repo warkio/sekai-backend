@@ -7,11 +7,15 @@ use App\Thread;
 use App\Section;
 use App\utils\StringHelper;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 class ThreadsController extends Controller
 {
     public function createThread(Request $r){
         $user = Auth::user();
+        if(!$user){
+            return response()->json(["error"=>"You must be logged in"], 401);
+        }
 
         // Check name
         if(!$r->has("name")){
