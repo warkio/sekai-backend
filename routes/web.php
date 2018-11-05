@@ -31,6 +31,10 @@ Route::get("/threads", "ThreadsController@getThreads");
 Route::get("/threads/{id}", "ThreadsController@getThreadInfo")->where(["id"=>"[0-9]+"]);
 Route::post("/threads", "ThreadsController@createThread");
 
+Route::get("/token", function(){
+    return response()->json(["token"=>\Illuminate\Support\Facades\Session::token()]);
+});
+
 
 Auth::routes();
 
