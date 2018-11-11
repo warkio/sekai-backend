@@ -11,8 +11,8 @@ namespace App\utils;
 
 class StringHelper
 {
-    public static function makeSlug(string title){
-        return strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $string)));
+    public static function makeSlug(string $title){
+        return strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $title)));
     }
 
 }
