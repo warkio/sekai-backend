@@ -21,6 +21,10 @@ class CategoriesController extends Controller
             return response()->json(["error"=>"Invalid parameters"], 400);
         }
 
+        $categoryVerification = Category::where("name", "=", $r->input("name"))->get();
+        if(!$categoryVerification->isEmpty()){
+            return response()->json(["error"=>"Category name already in use"], 400);
+        }
         $category = new Category();
         $category->name = $r->input("name");
         $category->slug = StringHelper::makeSlug($r->input("name"));
