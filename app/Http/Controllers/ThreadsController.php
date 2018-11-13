@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\User;
 use Illuminate\Http\Request;
 use App\Thread;
 use App\Section;
@@ -33,6 +34,7 @@ class ThreadsController extends Controller
 
         $thread = new Thread();
         $thread->name = $r->input("name");
+        $thread->user_id = $user->id;
         $thread->slug = StringHelper::makeSlug($r->input("name"));
         $thread->description = $r->has("description") ? $r->input("description") : null;
 
@@ -60,16 +62,22 @@ class ThreadsController extends Controller
             "content" => []
         ];
 
+        $postInfo = \App::make(PostsController::class);
         foreach($threads as $index=>$content){
             $data["content"][$index] = [
                 "id"=>$content->id,
                 "name"=>$content->name,
+                "user"=>[
+                    "id"=>$content->user_id,
+                    "name"=>User::find($content->user_id)->get("name")
+                ],
+                "lastPost"=>$postInfo->postInfo(),
                 "userId"=>$content->user_id,
                 "isPinned"=>$content->is_pinned,
                 "slug"=>$content->slug,
                 "image"=>$content->image,
                 "color"=>$content->color,
-                "sectionId"=>$content->section_id
+
             ];
         }
 

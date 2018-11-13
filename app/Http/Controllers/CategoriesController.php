@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Category;
+use App\Section;
 use Illuminate\Http\Request;
 use App\utils\StringHelper;
 use Illuminate\Support\Facades\DB;
@@ -89,28 +90,39 @@ class CategoriesController extends Controller
      * @return \Illuminate\Http\JsonResponse
      */
     public function getCategories(Request $r){
-        $page = $r->has("page") && $r->input("page") > 0 ? $r->input("page") : 1;
-        $quantity = $r->has("quantity") ? $r->input("quantity") : 15;
-        $quantity = min(max($quantity, 1), 100);
-
-        $categories = DB::table("categories")
-            ->skip(($page - 1) * $quantity)
-            ->take($quantity)
-            ->get();
+        $categories = Category::All();
         $data = [
             "total"=> Category::count(),
             "content"=> []
         ];
+        $sectionController = \App::make(SectionsController::class);
         foreach ($categories as $index=>$content){
             $data["content"][$index] = [
                 "id"=>$content->id,
                 "name"=>$content->name,
                 "slug"=>$content->slug,
+                "description"=>$content->description,
                 "image"=>$content->image,
-                "color"=>$content->color
+                "color"=>$content->color,
+                "sections"=> $sectionController->getSectionsByCategory($content->id)
             ];
         }
         return response()->json($data);
+    }
+
+    public function deleteCategory(Request $r, int $categoryId){
+        $category = Category::find($categoryId);
+        if(is_null($category)){
+            return response()->json(["error"=>"Invalid id"], 400);
+        }
+        try{
+            $category->delete();
+        }
+        catch (Exception $e){
+            return response()->json(["error"=>$e], 500);
+        }
+
+        return response()->json(["success"=>true], 200);
     }
 
 }

@@ -10,6 +10,22 @@ use Illuminate\Support\Facades\DB;
 
 class SectionsController extends Controller
 {
+
+    public function getSectionsByCategory(int $id){
+        $data = [];
+        $sections = Section::All()->where("category_id", "=", $id);
+        foreach ($sections as $index=>$section){
+            $data[$index] = [
+                "id"=>$section->id,
+                "image"=>$section->image,
+                "color"=>$section->color,
+                "name"=>$section->name,
+                "slug"=>$section->slug,
+                "description"=>$section->description
+            ];
+        }
+        return $data;
+    }
     /**
      * Creates a new section for a determined category
      * @param Request $r
@@ -26,13 +42,24 @@ class SectionsController extends Controller
             return response()->json(["error"=>"Invalid category id"], 400);
         }
 
+
         // Check name
         if(!$r->has("name") || !is_string($r->input("name"))){
             return response()->json(["error"=>"Invalid name"]);
         }
 
+        $previousSection = Section::
+            where([
+                "name" => $r->input("name"),
+                "category_id" => $r->input("categoryId")
+            ])->get();
+        // Unique name boi
+        if(!$previousSection->isEmpty()){
+            return response()->json(["error"=>"Section already exists with that name for that category"], 400);
+        }
         $section = new Section();
         // Name and slug
+        $section->category_id = $category->id;
         $section->name = $r->input("name");
         $section->slug = StringHelper::makeSlug($r->input("name"));
         // Image
