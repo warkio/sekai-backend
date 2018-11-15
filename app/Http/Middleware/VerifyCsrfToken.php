@@ -18,8 +18,8 @@ class VerifyCsrfToken extends Middleware
      *
      * @var array
      */
-    // TODO - Enable crsf token protection for endpoints
+    // TODO - Remove the unsafe endpoints
     protected $except = [
-        "/categories","/sections","/categories/*","/sections/*", "/threads", "/threads/*"
+        "/unsafe-*"
     ];
 }

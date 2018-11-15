@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class PermissionsTable extends Migration
 {
@@ -24,82 +25,128 @@ class PermissionsTable extends Migration
         DB::table("permissions")->insert(
             [
                 [
-                    "name"=>"admin"
+                    "name"=>"admin",
+                    "created_at" => Carbon::now(),
+                    "updated_at" => Carbon::now()
                 ],
                 [
-                    "name"=>"admin panel"
+                    "name"=>"admin panel",
+                    "created_at" => Carbon::now(),
+                    "updated_at" => Carbon::now()
                 ],
                 // Threads
                 [
-                    "name"=>"create thread"
+                    "name"=>"create thread",
+                    "created_at" => Carbon::now(),
+                    "updated_at" => Carbon::now()
                 ],
                 [
-                    "name"=>"delete thread"
+                    "name"=>"delete thread",
+                    "created_at" => Carbon::now(),
+                    "updated_at" => Carbon::now()
                 ],
                 [
-                    "name"=>"edit thread"
+                    "name"=>"edit thread",
+                    "created_at" => Carbon::now(),
+                    "updated_at" => Carbon::now()
                 ],
                 // Categories
                 [
-                    "name"=>"create categories"
+                    "name"=>"create categories",
+                    "created_at" => Carbon::now(),
+                    "updated_at" => Carbon::now()
                 ],
                 [
-                    "name"=>"delete categories"
+                    "name"=>"delete categories",
+                    "created_at" => Carbon::now(),
+                    "updated_at" => Carbon::now()
                 ],
                 [
-                    "name"=>"edit categories"
+                    "name"=>"edit categories",
+                    "created_at" => Carbon::now(),
+                    "updated_at" => Carbon::now()
                 ],
                 // Sections
                 [
-                    "name"=>"create sections"
+                    "name"=>"create sections",
+                    "created_at" => Carbon::now(),
+                    "updated_at" => Carbon::now()
                 ],
                 [
-                    "name"=>"edit sections"
+                    "name"=>"edit sections",
+                    "created_at" => Carbon::now(),
+                    "updated_at" => Carbon::now()
                 ],
                 [
-                    "name"=>"delete sections"
+                    "name"=>"delete sections",
+                    "created_at" => Carbon::now(),
+                    "updated_at" => Carbon::now()
                 ],
                 // Posts
                 [
-                    "name"=>"create posts"
+                    "name"=>"create posts",
+                    "created_at" => Carbon::now(),
+                    "updated_at" => Carbon::now()
                 ],
                 [
-                    "name"=>"edit posts"
+                    "name"=>"edit posts",
+                    "created_at" => Carbon::now(),
+                    "updated_at" => Carbon::now()
                 ],
                 [
-                    "name"=>"delete posts"
+                    "name"=>"delete posts",
+                    "created_at" => Carbon::now(),
+                    "updated_at" => Carbon::now()
                 ],
                 // users
                 [
-                    "name"=>"manage users"
+                    "name"=>"manage users",
+                    "created_at" => Carbon::now(),
+                    "updated_at" => Carbon::now()
                 ],
                 // Roles
                 [
-                    "name"=>"manage roles"
+                    "name"=>"manage roles",
+                    "created_at" => Carbon::now(),
+                    "updated_at" => Carbon::now()
                 ],
                 // Permissions
                 [
-                    "name"=>"manage permissions"
+                    "name"=>"manage permissions",
+                    "created_at" => Carbon::now(),
+                    "updated_at" => Carbon::now()
                 ],
                 // Items
                 [
-                    "name"=>"create items"
+                    "name"=>"create items",
+                    "created_at" => Carbon::now(),
+                    "updated_at" => Carbon::now()
                 ],
                 [
-                    "name"=>"delete items"
+                    "name"=>"delete items",
+                    "created_at" => Carbon::now(),
+                    "updated_at" => Carbon::now()
                 ],
                 [
-                    "name"=>"assign items"
+                    "name"=>"assign items",
+                    "created_at" => Carbon::now(),
+                    "updated_at" => Carbon::now()
                 ],
                 // Shops
                 [
-                    "name"=>"create shops"
+                    "name"=>"create shops",
+                    "created_at" => Carbon::now(),
+                    "updated_at" => Carbon::now()
                 ],
                 [
-                    "name"=>"delete shops"
+                    "name"=>"delete shops",
+                    "created_at" => Carbon::now(),
+                    "updated_at" => Carbon::now()
                 ],
                 [
-                    "name"=>"edit shops"
+                    "name"=>"edit shops",
+                    "created_at" => Carbon::now(),
+                    "updated_at" => Carbon::now()
                 ]
             ]
         );
