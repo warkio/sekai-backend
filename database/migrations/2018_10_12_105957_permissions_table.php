@@ -52,99 +52,99 @@ class PermissionsTable extends Migration
                 ],
                 // Categories
                 [
-                    "name"=>"create categories",
+                    "name"=>"create categorie",
                     "created_at" => Carbon::now(),
                     "updated_at" => Carbon::now()
                 ],
                 [
-                    "name"=>"delete categories",
+                    "name"=>"delete categorie",
                     "created_at" => Carbon::now(),
                     "updated_at" => Carbon::now()
                 ],
                 [
-                    "name"=>"edit categories",
+                    "name"=>"edit categorie",
                     "created_at" => Carbon::now(),
                     "updated_at" => Carbon::now()
                 ],
                 // Sections
                 [
-                    "name"=>"create sections",
+                    "name"=>"create section",
                     "created_at" => Carbon::now(),
                     "updated_at" => Carbon::now()
                 ],
                 [
-                    "name"=>"edit sections",
+                    "name"=>"edit section",
                     "created_at" => Carbon::now(),
                     "updated_at" => Carbon::now()
                 ],
                 [
-                    "name"=>"delete sections",
+                    "name"=>"delete section",
                     "created_at" => Carbon::now(),
                     "updated_at" => Carbon::now()
                 ],
                 // Posts
                 [
-                    "name"=>"create posts",
+                    "name"=>"create post",
                     "created_at" => Carbon::now(),
                     "updated_at" => Carbon::now()
                 ],
                 [
-                    "name"=>"edit posts",
+                    "name"=>"edit post",
                     "created_at" => Carbon::now(),
                     "updated_at" => Carbon::now()
                 ],
                 [
-                    "name"=>"delete posts",
+                    "name"=>"delete post",
                     "created_at" => Carbon::now(),
                     "updated_at" => Carbon::now()
                 ],
                 // users
                 [
-                    "name"=>"manage users",
+                    "name"=>"manage user",
                     "created_at" => Carbon::now(),
                     "updated_at" => Carbon::now()
                 ],
                 // Roles
                 [
-                    "name"=>"manage roles",
+                    "name"=>"manage role",
                     "created_at" => Carbon::now(),
                     "updated_at" => Carbon::now()
                 ],
                 // Permissions
                 [
-                    "name"=>"manage permissions",
+                    "name"=>"manage permission",
                     "created_at" => Carbon::now(),
                     "updated_at" => Carbon::now()
                 ],
                 // Items
                 [
-                    "name"=>"create items",
+                    "name"=>"create item",
                     "created_at" => Carbon::now(),
                     "updated_at" => Carbon::now()
                 ],
                 [
-                    "name"=>"delete items",
+                    "name"=>"delete item",
                     "created_at" => Carbon::now(),
                     "updated_at" => Carbon::now()
                 ],
                 [
-                    "name"=>"assign items",
+                    "name"=>"assign item",
                     "created_at" => Carbon::now(),
                     "updated_at" => Carbon::now()
                 ],
                 // Shops
                 [
-                    "name"=>"create shops",
+                    "name"=>"create shop",
                     "created_at" => Carbon::now(),
                     "updated_at" => Carbon::now()
                 ],
                 [
-                    "name"=>"delete shops",
+                    "name"=>"delete shop",
                     "created_at" => Carbon::now(),
                     "updated_at" => Carbon::now()
                 ],
                 [
-                    "name"=>"edit shops",
+                    "name"=>"edit shop",
                     "created_at" => Carbon::now(),
                     "updated_at" => Carbon::now()
                 ]
