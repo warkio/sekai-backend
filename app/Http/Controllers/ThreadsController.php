@@ -6,7 +6,6 @@ use App\User;
 use Illuminate\Http\Request;
 use App\Thread;
 use App\Section;
-use App\utils\StringHelper;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 
@@ -35,7 +34,6 @@ class ThreadsController extends Controller
         $thread = new Thread();
         $thread->name = $r->input("name");
         $thread->user_id = $user->id;
-        $thread->slug = StringHelper::makeSlug($r->input("name"));
         $thread->description = $r->has("description") ? $r->input("description") : null;
 
 
@@ -74,7 +72,6 @@ class ThreadsController extends Controller
                 "lastPost"=>$postInfo->postInfo(),
                 "userId"=>$content->user_id,
                 "isPinned"=>$content->is_pinned,
-                "slug"=>$content->slug,
                 "image"=>$content->image,
                 "color"=>$content->color,
 

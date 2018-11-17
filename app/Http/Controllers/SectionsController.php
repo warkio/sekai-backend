@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Section;
 use App\Category;
-use App\utils\StringHelper;
 use Illuminate\Support\Facades\DB;
 
 class SectionsController extends Controller
@@ -20,7 +19,6 @@ class SectionsController extends Controller
                 "image"=>$section->image,
                 "color"=>$section->color,
                 "name"=>$section->name,
-                "slug"=>$section->slug,
                 "description"=>$section->description
             ];
         }
@@ -61,7 +59,6 @@ class SectionsController extends Controller
         // Name and slug
         $section->category_id = $category->id;
         $section->name = $r->input("name");
-        $section->slug = StringHelper::makeSlug($r->input("name"));
         // Image
         if($r->has("image") && is_string($r->input("image"))){
             $section->image = $r->input("image");
@@ -108,7 +105,6 @@ class SectionsController extends Controller
             $data["content"][$index] = [
                 "id"=>$content->id,
                 "name"=>$content->name,
-                "slug"=>$content->slug,
                 "image"=>$content->image,
                 "color"=>$content->color,
                 "categoryId"=>$content->category_id
@@ -133,7 +129,6 @@ class SectionsController extends Controller
         $data = [
             "id"=>$content->id,
             "name"=>$content->name,
-            "slug"=>$content->slug,
             "image"=>$content->image,
             "color"=>$content->color,
             "categoryId"=>$content->category_id
@@ -157,7 +152,6 @@ class SectionsController extends Controller
             return response()->json(["error"=>"Invald request"]);
         }
         $section->name = $r->input("name");
-        $section->slug = StringHelper::makeSlug($r->input("name"));
         $section->color = $r->input("color");
         $section->image = $r->input("image");
         $section->description = $r->input("description");

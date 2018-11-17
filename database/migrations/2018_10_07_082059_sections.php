@@ -18,7 +18,6 @@ class Sections extends Migration
             $table->string("image")->nullable(true);
             $table->string("color")->default("#ffffff");
             $table->string("name")->nullable(false);
-            $table->string("slug")->nullable(false);
             $table->string("description")->nullable(true);
             $table->bigInteger("category_id")->nullable(false);
             $table->foreign("category_id")->references("id")->on("categories")->onDelete("cascade");

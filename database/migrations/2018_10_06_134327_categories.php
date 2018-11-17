@@ -16,7 +16,6 @@ class Categories extends Migration
         Schema::create("categories", function(Blueprint $table){
             $table->bigIncrements("id");
             $table->string("name")->nullable(false)->unique(true);
-            $table->string("slug")->nullable(false);
             $table->string("description")->nullable(true);
             $table->string("image")->nullable(true);
             $table->string("color")->nullable(false)->default("#ffffff");

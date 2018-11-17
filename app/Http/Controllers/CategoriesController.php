@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Category;
 use App\Section;
 use Illuminate\Http\Request;
-use App\utils\StringHelper;
 use Illuminate\Support\Facades\DB;
 
 class CategoriesController extends Controller
@@ -27,7 +26,6 @@ class CategoriesController extends Controller
         }
         $category = new Category();
         $category->name = $r->input("name");
-        $category->slug = StringHelper::makeSlug($r->input("name"));
         // Optional description
         if($r->has("description") && is_string($r->input("description"))){
             $category->description = $r->input("description");
@@ -59,7 +57,6 @@ class CategoriesController extends Controller
         }
         // Edit category info
         $category->name = $r->input("name");
-        $category->slug = StringHelper::makeSlug($r->input("name"));
         $category->description = $r->has("description")? $r->input("Description") : $category->description;
         $category->image = is_string($r->input("image")) ? $r->input("image") : $category->image;
         $category->color = is_string($r->input("color")) ? $r->input("color") : $category->color;
@@ -104,7 +101,6 @@ class CategoriesController extends Controller
             $data["content"][$index] = [
                 "id"=>$content->id,
                 "name"=>$content->name,
-                "slug"=>$content->slug,
                 "description"=>$content->description,
                 "image"=>$content->image,
                 "color"=>$content->color,

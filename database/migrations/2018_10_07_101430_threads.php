@@ -16,7 +16,6 @@ class Threads extends Migration
         Schema::create("threads", function(Blueprint $table){
            $table->bigIncrements("id");
            $table->string("name")->nullable(false);
-           $table->string("slug")->nullable(false);
            $table->string("description")->nullable(true);
            $table->bigInteger("user_id")->nullable(false);
            $table->bigInteger("section_id")->nullable(false);
