@@ -41,6 +41,12 @@ Route::get("/token", function(){
     return response()->json(["token"=>\Illuminate\Support\Facades\Session::token()]);
 });
 
+Route::get("/user", function(){
+    $user = Auth::user();
+    unset($user["created_at"]);
+    unset($user["updated_at"]);
+    return response()->json($user);
+});
 
 Auth::routes();
 
