@@ -79,24 +79,24 @@
     <main class="py-4">
         <div class="container-fluid">
             <!-- Every row is a category -->
-            @foreach($categories["content"] as $index=>$category)
+            @foreach($categories as $category)
             <div class="row">
-                <div id="category-carousel{{$index}}" class="carousel slide" data-ride="carousel" data-interval="false">
+                <div id="category-carousel{{$loop->index}}" class="carousel slide" data-ride="carousel" data-interval="false">
                     <div class="category-name-section"></div>
                     <p class="category-name">General</p>
                     <ol class="carousel-indicators">
-                        @foreach($category["sections"] as $sectionIndex => $section)
-                            @if($sectionIndex == 0)
-                            <li data-target="#category-carousel{{$index}}" data-slide-to="{{$sectionIndex}}" class="active"></li>
+                        @foreach($category["sections"] as $section)
+                            @if($loop->index == 0)
+                            <li data-target="#category-carousel{{$loop->parent->index}}" data-slide-to="{{$loop->index}}" class="active"></li>
                             @else
-                            <li data-target="#category-carousel{{$index}}" data-slide-to="{{$sectionIndex}}"></li>
+                            <li data-target="#category-carousel{{$loop->parent->index}}" data-slide-to="{{$loop->index}}"></li>
                             @endif
                         @endforeach
                     </ol>
                     <!-- Inside Carousel -->
-                    <div class="carousel-inner" style="background: #ffffff url(https://u.rindou.moe/p6jwBp8APwj1BLenHbhx.jpg) no-repeat left;">
+                    <div class="carousel-inner" style="background: #ffffff url({{$category["image"]}}) no-repeat left;">
                         <!-- Each carousel-item is a section -->
-                        @foreach($category["sections"] as $sectionIndex => $section)
+                        @foreach($category["sections"] as $section)
                         <div class="carousel-item active">
                             <div class="card bg-dark" >
                                 <div class="section-image" style="background: url({{$section["image"]}}) no-repeat center top;"></div>
@@ -110,11 +110,11 @@
                         </div>
                         @endforeach
                     </div>
-                    <a class="carousel-control-prev" href="category-carousel{{$index}}" role="button" data-slide="prev">
+                    <a class="carousel-control-prev" href="category-carousel{{$loop->index}}" role="button" data-slide="prev">
                         <span class="carousel-control-prev-icon" aria-hidden="true"></span>
                         <span class="sr-only">Previous</span>
                     </a>
-                    <a class="carousel-control-next" href="category-carousel{{$index}}" role="button" data-slide="next">
+                    <a class="carousel-control-next" href="category-carousel{{$loop->index}}" role="button" data-slide="next">
                         <span class="carousel-control-next-icon" aria-hidden="true"></span>
                         <span class="sr-only">Next</span>
                     </a>
