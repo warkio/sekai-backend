@@ -6,6 +6,7 @@ use App\Category;
 use App\Section;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Role;
 
 class CategoriesController extends Controller
 {
@@ -84,13 +85,7 @@ class CategoriesController extends Controller
         ]);
     }
 
-
-    /**
-     * Gets all categories
-     * @param Request $r
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function getCategories(Request $r){
+    private function getAllCategories(bool $ignoreWithEmptySections = true){
         $categories = Category::All();
         $data = [
             "total"=> Category::count(),
@@ -98,16 +93,38 @@ class CategoriesController extends Controller
         ];
         $sectionController = \App::make(SectionsController::class);
         foreach ($categories as $index=>$content){
+            $sections = $sectionController->getSectionsByCategory($content->id);
+            if($ignoreWithEmptySections && empty($sections)){
+                continue;
+            }
             $data["content"][$index] = [
                 "id"=>$content->id,
                 "name"=>$content->name,
                 "description"=>$content->description,
                 "image"=>$content->image,
                 "color"=>$content->color,
-                "sections"=> $sectionController->getSectionsByCategory($content->id)
+                "sections"=> $sections,
             ];
         }
-        return response()->json($data);
+        return $data;
+    }
+
+    /**
+     * Gets all categories
+     * @param Request $r
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getCategories(Request $r){
+        return response()->json($this->getAllCategories(false));
+    }
+
+    /**
+     * Render the main page
+     * @param Request $r
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function renderMainPage(Request $r){
+        return view("index", ["categories"=>$this->getAllCategories()["content"]]);
     }
 
     public function deleteCategory(Request $r, int $categoryId){

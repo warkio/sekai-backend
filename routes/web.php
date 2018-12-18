@@ -11,9 +11,7 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', "CategoriesController@renderMainPage");
 
 Route::get("/threads", function(){
     return view("threads");
@@ -41,10 +39,13 @@ Route::get("/token", function(){
     return response()->json(["token"=>\Illuminate\Support\Facades\Session::token()]);
 });
 
+
 Route::get("/user", function(){
     $user = Auth::user();
     unset($user["created_at"]);
     unset($user["updated_at"]);
+    if($user)
+        $user["permissions"] = $user->getPermissions();
     return response()->json($user);
 });
 
