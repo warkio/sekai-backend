@@ -102,7 +102,7 @@
                                 <div class="section-image" style="background: url({{$section["image"]}}) no-repeat center top;"></div>
                                 <div class="card-body" >
                                     <div class="description-holder">
-                                        <h5 class="card-title text-center">{{$section["title"]}}</h5>
+                                        <h5 class="card-title text-center">{{$section["name"]}}</h5>
                                         <p class="card-text">{{$section["description"]}}</p>
                                     </div>
                                 </div>

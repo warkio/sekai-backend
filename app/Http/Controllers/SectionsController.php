@@ -31,7 +31,7 @@ class SectionsController extends Controller
      */
     public function createSection(Request $r){
         // Check if the category id is passed
-        if(!$r->has("categoryId") || !is_int($r->input("categoryId"))){
+        if(!$r->has("categoryId") || !is_numeric($r->input("categoryId"))){
             return response()->json(["error"=>"Category id must be integer"], 400);
         }
         // Verify category existence
@@ -90,7 +90,7 @@ class SectionsController extends Controller
         $quantity = min(max($quantity, 1), 100);
 
         $sections = DB::table("sections");
-        if($r->has("category-id") && is_int($r->input("category-id"))){
+        if($r->has("category-id") && is_numeric($r->input("category-id"))){
             $sections = $sections->where("category_id","=",$r->input("category-id"));
         }
         $total = $sections->count();

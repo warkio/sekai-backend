@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Post;
 use App\User;
 use Illuminate\Http\Request;
 use App\Thread;
@@ -19,10 +20,13 @@ class ThreadsController extends Controller
 
         // Check name
         if(!$r->has("name")){
-            return response()->json(["error"=>"Name needed"]);
+            return response()->json(["error"=>"Name needed"], 400);
         }
-        if(!$r->has("sectionId") || ! is_int($r->input("sectionId"))){
+        if(!$r->has("sectionId") || ! is_numeric($r->input("sectionId"))){
             return response()->json(["error"=>"No section id"], 400);
+        }
+        if(!$r->has("content")){
+            return response()->json(["error"=>"Post content needed"], 400);
         }
         else{
             $section = Section::find($r->input("sectionId"));
@@ -33,9 +37,17 @@ class ThreadsController extends Controller
 
         $thread = new Thread();
         $thread->name = $r->input("name");
+        $thread->section_id = $r->input("sectionId");
         $thread->user_id = $user->id;
         $thread->description = $r->has("description") ? $r->input("description") : null;
+        $thread->save();
+        $post = new Post();
+        $post->thread_id = $thread->id;
+        $post->content = $r->input("content");
+        $post->user_id = $user->id;
+        $post->save();
 
+        return response()->json(["threadId"=>$thread->id, "postId"=>$post->id]);
 
     }
 
@@ -49,7 +61,7 @@ class ThreadsController extends Controller
         $quantity = min(max($quantity, 1), 100);
 
         $threads = DB::table("threads");
-        if($r->has("section-id") && is_int($r->input("section-id"))){
+        if($r->has("section-id") && is_numeric($r->input("section-id"))){
             $threads = $threads->where("section_id","=",$r->input("section-id"));
         }
         $total = $threads->count();

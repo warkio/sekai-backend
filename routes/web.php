@@ -35,6 +35,12 @@ Route::post("/threads", "ThreadsController@createThread");
 Route::post("/unsafe-threads", "ThreadsController@createThread");
 Route::delete("/threads/{id}", "ThreadsController@deleteThread")->where(["id"=>"[0-9]+"]);
 
+Route::get("/posts", "PostsController@getPosts");
+Route::get("/posts/{id}", "PostsController@getPostInfo")->where(["id"=>"[0-9]+"]);
+Route::post("/posts", "PostsController@createPost");
+Route::post("/unsafe-posts", "PostsController@createPost");
+Route::delete("/posts/{id}", "PostsController@deletePost")->where(["id"=>"[0-9]+"]);
+
 Route::get("/token", function(){
     return response()->json(["token"=>\Illuminate\Support\Facades\Session::token()]);
 });
