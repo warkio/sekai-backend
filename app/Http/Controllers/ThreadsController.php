@@ -41,6 +41,7 @@ class ThreadsController extends Controller
         $thread->user_id = $user->id;
         $thread->description = $r->has("description") ? $r->input("description") : null;
         $thread->save();
+        // TODO - User reward when creating post
         $post = new Post();
         $post->thread_id = $thread->id;
         $post->content = $r->input("content");
@@ -52,6 +53,38 @@ class ThreadsController extends Controller
     }
 
     public function editThread(Request $r, int $threadId){
+        $user = Auth::user();
+        if(!$user){
+            return response()->json(["error"=>"unauthorized"], 401);
+        }
+        $userPermissions = $user->getPermissions();
+        $thread = Post::find($threadId);
+        // Check posts existence
+        if(is_null($thread)){
+            return response()->json(["error"=>"Invalid id"], 400);
+        }
+        // Only admin, moderators and own user can edit post
+        if(!$userPermissions["admin"] && !$userPermissions["edit thread"] && $post->user_id != $user->id){
+            return response()->json(["error"=>"unauthorized"], 401);
+        }
+
+        // Change pinned value
+        if(($userPermissions["admin"] || $userPermissions["edit thread"] ) && $r->has("pinned")){
+            if(is_bool($r->input("pinned"))){
+                $thread->is_pinned = $r->input("pinned");
+            }
+        }
+
+        if($r->has("name") && is_string($r->input("name"))){
+            $thread->name = $r->input("name");
+        }
+        if($r->has("description") && is_string($r->input("description"))){
+            $thread->description = $r->input("description");
+        }
+
+        $thread->save();
+
+        return response()->json(["success"=>true], 200);
 
     }
 
@@ -94,10 +127,19 @@ class ThreadsController extends Controller
     }
 
     public function deleteThread(Request $r, int $threadId){
+        $user = Auth::user();
+        if(!$user){
+            return response()->json(["error"=>"unauthorized"], 401);
+        }
+        $userPermissions = $user->getPermissions();
+        if(!$userPermissions["admin"] && !$userPermissions["delete thread"]){
+            return response()->json(["error"=>"unauthorized"], 401);
+        }
         $thread = Section::find($threadId);
         if(is_null($thread)){
             return response()->json(["error"=>"Invalid id"], 400);
         }
+
         try{
             $thread->delete();
         }

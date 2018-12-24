@@ -25,6 +25,10 @@ class PostsController extends Controller
         if(!$user){
             return response()->json(["error"=>"You must be logged in"], 401);
         }
+        $userPermissions = $user->getPermissions();
+        if(!$userPermissions["admin"] && !$userPermissions["create post"]){
+            return response()->json(["error"=>"unauthorized"], 401);
+        }
         // Check name
         if(!$r->has("content") || strlen($r->input("content")) == 0){
             return response()->json(["error"=>"content needed"]);
@@ -62,10 +66,24 @@ class PostsController extends Controller
 
         $data = [
             "total" => $total,
+            "users" => [],
             "content" => []
         ];
 
         foreach($posts as $index=>$content){
+            // Get the user info
+            if(!array_key_exists($content->user_id, $data["users"])){
+                $user = User::find($content->user_id);
+                $data["users"][$content->user_id] = [
+                    "onRolMoney" => $user->on_rol_money,
+                    "offRolMoney" => $user->off_rol_money,
+                    "level" => $user->level,
+                    "exp" => $user->exp,
+                    "avatar" => $user->avatar,
+                    "signature" => $user->signature,
+
+                ];
+            }
             $data["content"][$index] = [
                 "id"=>$content->id,
                 "content"=>$content->content,
@@ -109,14 +127,53 @@ class PostsController extends Controller
         return $data;
     }
 
-    public function editPost(Request $r, int $postid){
-        // soon
+    public function editPost(Request $r, int $postId){
+        $user = Auth::user();
+        if(!$user){
+            return response()->json(["error"=>"unauthorized"], 401);
+        }
+        $userPermissions = $user->getPermissions();
+        $post = Post::find($postId);
+        // Check posts existence
+        if(is_null($post)){
+            return response()->json(["error"=>"Invalid id"], 400);
+        }
+        // Only admin, moderators and own user can edit post
+        if(!$userPermissions["admin"] && !$userPermissions["edit post"] && $post->user_id != $user->id){
+            return response()->json(["error"=>"unauthorized"], 401);
+        }
+
+        if(!$r->has("content") || !is_string($r->input('content'))){
+            return response()->json(["error"=>"Invalid content"], 400);
+        }
+
+
+        $post->content = $r->input("content");
+        if($r->has("editReason") && is_string($r->input("editReason"))){
+            $post->last_update_reason = $r->input("editReason");
+        }
+        $post->last_updated_by = $user->id;
+
+        $post->save();
+
+        return response()->json(["success"=>true], 200);
+
     }
 
     public function deletePost(Request $r, int $postId){
+        $user = Auth::user();
+        if(!$user){
+            return response()->json(["error"=>"unauthorized"], 401);
+        }
+        $userPermissions = $user->getPermissions();
         $post = Post::find($postId);
+        // Check posts existence
         if(is_null($post)){
             return response()->json(["error"=>"Invalid id"], 400);
+        }
+        // Only admin and moderators can delete posts
+        if(!$userPermissions["admin"] && !$userPermissions["delete post"]){
+            return response()->json(["error"=>"unauthorized"], 401);
         }
         try{
             $post->delete();
