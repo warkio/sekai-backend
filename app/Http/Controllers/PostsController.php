@@ -95,6 +95,7 @@ class PostsController extends Controller
             if(!array_key_exists($content->user_id, $data["users"])){
                 $user = User::find($content->user_id);
                 $data["users"][$content->user_id] = [
+                    "name" => $user->name,
                     "onRolMoney" => $user->on_rol_money,
                     "offRolMoney" => $user->off_rol_money,
                     "level" => $user->level,

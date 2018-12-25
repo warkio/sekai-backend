@@ -54,7 +54,6 @@ class ThreadsController extends Controller
             return response()->json(["error"=>"Server error"], 500);
         }
 
-
         return response()->json(["threadId"=>$thread->id, "postId"=>$post->id]);
 
     }
