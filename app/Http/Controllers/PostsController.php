@@ -110,7 +110,8 @@ class PostsController extends Controller
                 "lastUpdatedBy"=>$content->last_updated_by,
                 "lastUpdateReason"=>$content->last_update_reason,
                 "userId"=>$content->user_id,
-                "threadId"=>$content->thread_id
+                "threadId"=>$content->thread_id,
+                "sectionId" =>Thread::find($content->thread_id)->section_id
             ];
         }
 
