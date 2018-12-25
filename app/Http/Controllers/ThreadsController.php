@@ -42,8 +42,8 @@ class ThreadsController extends Controller
         $thread->description = $r->has("description") ? $r->input("description") : null;
         $thread->save();
         // TODO - User reward when creating post
+        $post = new Post();
         try{
-            $post = new Post();
             $post->thread_id = $thread->id;
             $post->content = $r->input("content");
             $post->user_id = $user->id;
