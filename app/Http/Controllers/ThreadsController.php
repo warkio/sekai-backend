@@ -107,7 +107,7 @@ class ThreadsController extends Controller
         }
         $pinnedThreads = [];
         $postInfo = \App::make(PostsController::class);
-        $query = "select distinct on (name) * from ( SELECT threads.*, posts.created_at as last_post_date, posts.id as post_id from threads left join posts on posts.thread_id = threads.id order by last_post_date desc) as threads";
+        $query = "select * from (select distinct on (id) * from ( SELECT threads.*, posts.created_at as last_post_date, posts.id as post_id from threads left join posts on posts.thread_id = threads.id order by last_post_date asc) as threads) as res";
         if($getPinned){
             $pinned = DB::select(
                 DB::raw(
@@ -140,7 +140,7 @@ class ThreadsController extends Controller
             $query .= " WHERE is_pinned=false AND section_id=?";
             array_push($params, $r->input("section-id"));
         }
-        $query .= " limit ? offset ?";
+        $query .= " order by last_post_date desc limit ? offset ?";
         array_push($params, $quantity);
         array_push($params, ($page-1)*$quantity);
         $threads = DB::select(
