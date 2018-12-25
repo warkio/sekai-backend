@@ -159,7 +159,7 @@ class ThreadsController extends Controller
 
 
         foreach($threads as $index=>$content){
-            $data["content"][$index] = [
+            array_push($data["content"], [
                 "id"=>$content->id,
                 "name"=>$content->name,
                 "user"=>[
@@ -169,7 +169,7 @@ class ThreadsController extends Controller
                 "lastPost"=>$postInfo->postInfo($content->post_id),
                 "userId"=>$content->user_id,
                 "isPinned"=>$content->is_pinned,
-            ];
+            ]);
         }
 
         return response()->json($data, 200);
