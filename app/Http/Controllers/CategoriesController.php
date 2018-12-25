@@ -6,6 +6,7 @@ use App\Category;
 use App\Section;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 use App\Role;
 
 class CategoriesController extends Controller
@@ -17,6 +18,14 @@ class CategoriesController extends Controller
      * @return \Illuminate\Http\JsonResponse
      */
     public function createCategory(Request $r){
+        $user = Auth::user();
+        if(!$user){
+            return response()->json(["error"=>"Unauthorized"], 401);
+        }
+        $userPermisions = $user->getPermissions();
+        if(!$userPermisions["admin"] && !$userPermisions["create category"]){
+            return response()->json(["error"=>"Unauthorized"], 401);
+        }
         if(!$r->has("name")){
             return response()->json(["error"=>"Invalid parameters"], 400);
         }
@@ -51,14 +60,33 @@ class CategoriesController extends Controller
      * @return \Illuminate\Http\JsonResponse
      */
     public function editCategory(Request $r, int $id){
+        $user = Auth::user();
+        if(!$user){
+            return response()->json(["error"=>"Unauthorized"], 401);
+        }
+        $userPermisions = $user->getPermissions();
+        if(!$userPermisions["admin"] && !$userPermisions["edit category"]){
+            return response()->json(["error"=>"Unauthorized"], 401);
+        }
         $category = Category::find($id);
         // Category not found
         if(is_null($category)){
             return response()->json(["error"=>"Invalid category"], 400);
         }
+        if(!$r->has("name") && !$r->has("description") && !$r->has("image") && !$r->has("color")){
+            return response()->json(["error"=>"You must edit something"], 400);
+        }
+        if($r->has("name")){
+            $categoryVerification = Category::where("name", "=", $r->input("name"))->get();
+            if(!$categoryVerification->isEmpty()){
+                return response()->json(["error"=>"Category name already in use"], 400);
+            }
+
+        }
+
         // Edit category info
-        $category->name = $r->input("name");
-        $category->description = $r->has("description")? $r->input("Description") : $category->description;
+        $category->name =$r->has("name")? $r->input("name") : $category->description;
+        $category->description = $r->has("description")? $r->input("description") : $category->name;
         $category->image = is_string($r->input("image")) ? $r->input("image") : $category->image;
         $category->color = is_string($r->input("color")) ? $r->input("color") : $category->color;
         return response()->json(["success"=>true],200);
@@ -128,6 +156,14 @@ class CategoriesController extends Controller
     }
 
     public function deleteCategory(Request $r, int $categoryId){
+        $user = Auth::user();
+        if(!$user){
+            return response()->json(["error"=>"Unauthorized"], 401);
+        }
+        $userPermisions = $user->getPermissions();
+        if(!$userPermisions["admin"] && !$userPermisions["delete category"]){
+            return response()->json(["error"=>"Unauthorized"], 401);
+        }
         $category = Category::find($categoryId);
         if(is_null($category)){
             return response()->json(["error"=>"Invalid id"], 400);

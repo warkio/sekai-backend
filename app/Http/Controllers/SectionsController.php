@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Section;
+use Illuminate\Support\Facades\Auth;
 use App\Category;
 use Illuminate\Support\Facades\DB;
 
@@ -30,6 +31,14 @@ class SectionsController extends Controller
      * @return \Illuminate\Http\JsonResponse
      */
     public function createSection(Request $r){
+        $user = Auth::user();
+        if(!$user){
+            return response()->json(["error"=>"Unauthorized"], 401);
+        }
+        $userPermisions = $user->getPermissions();
+        if(!$userPermisions["admin"] && !$userPermisions["create section"]){
+            return response()->json(["error"=>"Unauthorized"], 401);
+        }
         // Check if the category id is passed
         if(!$r->has("categoryId") || !is_numeric($r->input("categoryId"))){
             return response()->json(["error"=>"Category id must be integer"], 400);
@@ -144,6 +153,14 @@ class SectionsController extends Controller
      * @return \Illuminate\Http\JsonResponse
      */
     public function editSection(Request $r, int $sectionId){
+        $user = Auth::user();
+        if(!$user){
+            return response()->json(["error"=>"Unauthorized"], 401);
+        }
+        $userPermisions = $user->getPermissions();
+        if(!$userPermisions["admin"] && !$userPermisions["edit section"]){
+            return response()->json(["error"=>"Unauthorized"], 401);
+        }
         $section = Section::find($sectionId);
         if(is_null($section)){
             return response()->json(["error"=>"Invald section"], 400);
@@ -160,6 +177,14 @@ class SectionsController extends Controller
     }
 
     public function deleteSection(Request $r, int $sectionId){
+        $user = Auth::user();
+        if(!$user){
+            return response()->json(["error"=>"Unauthorized"], 401);
+        }
+        $userPermisions = $user->getPermissions();
+        if(!$userPermisions["admin"] && !$userPermisions["delete section"]){
+            return response()->json(["error"=>"Unauthorized"], 401);
+        }
         $section = Section::find($sectionId);
         if(is_null($section)){
             return response()->json(["error"=>"Invalid id"], 400);
