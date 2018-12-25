@@ -11,6 +11,26 @@ use Illuminate\Support\Facades\Auth;
 
 class PostsController extends Controller
 {
+
+    public function postInfo($postId){
+        if($postId == null){
+            return null;
+        }
+        $post = Post::find($postId);
+        if(!$post){
+            return null;
+        }
+        $user = User::find($post->user_id);
+        $postInfo = [
+            "id"=>$postId,
+            "user"=>[
+                "id"=>$user->id,
+                "name"=>$user->name
+            ],
+            "date"=>$post->created_at
+        ];
+        return $postInfo;
+    }
     /**
      * Creates a new post. Requires:
      * - Being auth

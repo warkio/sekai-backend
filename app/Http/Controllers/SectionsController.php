@@ -165,13 +165,13 @@ class SectionsController extends Controller
         if(is_null($section)){
             return response()->json(["error"=>"Invald section"], 400);
         }
-        if(!$r->has("name")){
-            return response()->json(["error"=>"Invald request"]);
+        if(!$r->has("name") && !$r->has("color") && !$r->has("image") && !$r->has("description")){
+            return response()->json(["error"=>"You must edit something"], 400);
         }
-        $section->name = $r->input("name");
-        $section->color = $r->input("color");
-        $section->image = $r->input("image");
-        $section->description = $r->input("description");
+        $section->name = $r->has("name")? $r->input("name") : $section->name;
+        $section->color = $r->has("color")? $r->input("color") : $section->color;
+        $section->image = $r->has("image")? $r->input("image") : $section->image;
+        $section->description = $r->has("description")? $r->input("description") : $section->description;
         $section->save();
         return response()->json(["success"=>true], 200);
     }

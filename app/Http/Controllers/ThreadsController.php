@@ -42,11 +42,18 @@ class ThreadsController extends Controller
         $thread->description = $r->has("description") ? $r->input("description") : null;
         $thread->save();
         // TODO - User reward when creating post
-        $post = new Post();
-        $post->thread_id = $thread->id;
-        $post->content = $r->input("content");
-        $post->user_id = $user->id;
-        $post->save();
+        try{
+            $post = new Post();
+            $post->thread_id = $thread->id;
+            $post->content = $r->input("content");
+            $post->user_id = $user->id;
+            $post->save();
+        }
+        catch (\Exception $e){
+            $thread->delete();
+            return response()->json(["error"=>"Server error"], 500);
+        }
+
 
         return response()->json(["threadId"=>$thread->id, "postId"=>$post->id]);
 
@@ -93,33 +100,75 @@ class ThreadsController extends Controller
         $quantity = $r->has("quantity") ? $r->input("quantity") : 15;
         $quantity = min(max($quantity, 1), 100);
 
+        $getPinned = $r->has("section-id");
         $threads = DB::table("threads");
         if($r->has("section-id") && is_numeric($r->input("section-id"))){
             $threads = $threads->where("section_id","=",$r->input("section-id"));
         }
+        $pinnedThreads = [];
+        $postInfo = \App::make(PostsController::class);
+        $query = "select distinct on (name) * from ( SELECT threads.*, posts.created_at as last_post_date, posts.id as post_id from threads left join posts on posts.thread_id = threads.id order by last_post_date desc) as threads";
+        if($getPinned){
+            $pinned = DB::select(
+                DB::raw(
+                    $query . " WHERE is_pinned=true AND section_id=?"
+                ),
+                [$r->input("section-id")]
+            );
+            // We dont want pinned threads on the other query
+            $threads = $threads->where("is_pinned","=",false);
+            foreach ($pinned as $index => $content){
+                array_push($pinnedThreads, [
+                    "id"=>$content->id,
+                    "name"=>$content->name,
+                    "user"=>[
+                        "id"=>$content->user_id,
+                        "name"=>User::find($content->user_id)->name
+                    ],
+                    "lastPost"=>$postInfo->postInfo($content->post_id),
+                    "userId"=>$content->user_id,
+                    "isPinned"=>$content->is_pinned,
+                ]);
+            }
+        }
         $total = $threads->count();
-        $threads = $threads->limit($quantity)->offset(($page-1)*$quantity)->get();
+        //$threads = $threads->limit($quantity)->offset(($page-1)*$quantity)->get();
 
+
+        $params = [];
+        if($getPinned){
+            $query .= " WHERE is_pinned=false AND section_id=?";
+            array_push($params, $r->input("section-id"));
+        }
+        $query .= " limit ? offset ?";
+        array_push($params, $quantity);
+        array_push($params, ($page-1)*$quantity);
+        $threads = DB::select(
+            DB::raw(
+                $query
+            ),
+            $params
+        );
         $data = [
             "total" => $total,
             "content" => []
         ];
+        if($getPinned){
+            $data["pinned"] = $pinnedThreads;
+        }
 
-        $postInfo = \App::make(PostsController::class);
+
         foreach($threads as $index=>$content){
             $data["content"][$index] = [
                 "id"=>$content->id,
                 "name"=>$content->name,
                 "user"=>[
                     "id"=>$content->user_id,
-                    "name"=>User::find($content->user_id)->get("name")
+                    "name"=>User::find($content->user_id)->name
                 ],
-                "lastPost"=>$postInfo->postInfo(),
+                "lastPost"=>$postInfo->postInfo($content->post_id),
                 "userId"=>$content->user_id,
                 "isPinned"=>$content->is_pinned,
-                "image"=>$content->image,
-                "color"=>$content->color,
-
             ];
         }
 
@@ -143,7 +192,7 @@ class ThreadsController extends Controller
         try{
             $thread->delete();
         }
-        catch (Exception $e){
+        catch (\Exception $e){
             return response()->json(["error"=>$e], 500);
         }
 

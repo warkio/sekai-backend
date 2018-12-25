@@ -24,7 +24,7 @@ Route::post("/unsafe-categories", "CategoriesController@createCategory");
 Route::delete("/categories/{id}", "CategoriesController@deleteCategory")->where(["id"=>"[0-9]+"]);
 
 Route::get("/sections", "SectionsController@getSections");
-Route::get("/sections/{id}", "SetionsController@getSectionInfo")->where(["id"=>"[0-9]+"]);
+Route::get("/sections/{id}", "SectionsController@getSectionInfo")->where(["id"=>"[0-9]+"]);
 Route::post("/sections", "SectionsController@createSection");
 Route::post("/unsafe-sections", "SectionsController@createSection");
 Route::delete("/sections/{id}", "SectionsController@deleteSection")->where(["id"=>"[0-9]+"]);
