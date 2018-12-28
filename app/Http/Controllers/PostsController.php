@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Post;
 use App\Thread;
 use App\User;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -27,8 +28,9 @@ class PostsController extends Controller
                 "id"=>$user->id,
                 "name"=>$user->name
             ],
-            "date"=>$post->created_at
+            "date"=> $post->created_at->format(Carbon::RFC3339)
         ];
+        
         return $postInfo;
     }
     /**
