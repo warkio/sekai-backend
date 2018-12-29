@@ -30,7 +30,7 @@ class PostsController extends Controller
             ],
             "date"=> $post->created_at->format(Carbon::RFC3339)
         ];
-        
+
         return $postInfo;
     }
     /**
