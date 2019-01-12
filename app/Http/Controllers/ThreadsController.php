@@ -170,7 +170,7 @@ class ThreadsController extends Controller
                     "id"=>$content->user_id,
                     "name"=>User::find($content->user_id)->name
                 ],
-                "readed"=>$readed,
+                "isRead"=>$readed,
                 "lastPost"=>$postInfo->postInfo($content->post_id),
                 "userId"=>$content->user_id,
                 "isPinned"=>$content->is_pinned,
