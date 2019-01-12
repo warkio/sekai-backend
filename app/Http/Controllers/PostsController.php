@@ -71,6 +71,26 @@ class PostsController extends Controller
         $post->content = $r->input("content");
         $post->user_id = $user->id;
         $post->save();
+        $exists = DB::table("readed_threads")
+            ->where([["thread_id","=",$r->input("thread-id")], ["user_id","=",$user->id]])
+            ->first();
+        if(!$exists){
+            DB::table("readed_threads")->insert([
+                "thread_id"=>$this->id,
+                "user_id"=>$userId,
+                "is_read"=>true
+            ]);
+        }
+        else{
+            DB::update(
+                "UPDATE readed_threads SET is_read=false WHERE thread_id=?",
+                [$r->input("thread_id")]
+            );
+            DB::update(
+                "UPDATE readed_threads SET is_read=true WHERE thread_id=? AND user_id=?",
+                [$r->input("thread_id"), $user->id]
+            );
+        }
         return response()->json(["id"=>$post->id],200);
     }
 
@@ -79,9 +99,20 @@ class PostsController extends Controller
         $quantity = $r->has("quantity") ? $r->input("quantity") : 15;
         $quantity = min(max($quantity, 1), 100);
 
+
         $posts = DB::table("posts");
+        $user = Auth::user();
+        // Mark as read if possible
         if($r->has("thread-id") && is_numeric($r->input("thread-id"))){
             $posts = $posts->where("thread_id","=",$r->input("thread-id"));
+            $validThread = Thread::find($r->input('thread-id'));
+            if($user && $validThread && !$validThread->readedBy($user->id)){
+                DB::update(
+                    "UPDATE readed_threads SET is_read=true WHERE thread_id=? AND user_id=?",
+                    [$r->input("thread-id"), $user->id]
+                );
+            }
+
         }
         $total = $posts->count();
         $posts = $posts->limit($quantity)->offset(($page-1)*$quantity)->get();

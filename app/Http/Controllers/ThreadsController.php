@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Post;
 use App\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Thread;
 use App\Section;
@@ -53,6 +54,7 @@ class ThreadsController extends Controller
             $thread->delete();
             return response()->json(["error"=>"Server error"], 500);
         }
+
 
         return response()->json(["threadId"=>$thread->id, "postId"=>$post->id]);
 
@@ -156,8 +158,11 @@ class ThreadsController extends Controller
             $data["pinned"] = $pinnedThreads;
         }
 
-
+        $user = Auth::user();
         foreach($threads as $index=>$content){
+            $lastPost = Carbon::parse($postInfo->postInfo($content->post_id)["date"]);
+            $thread = Thread::find($content->id);
+            $readed = $user->created_at > $lastPost || !$user? true : $thread->readedBy($user->id);
             array_push($data["content"], [
                 "id"=>$content->id,
                 "name"=>$content->name,
@@ -165,6 +170,7 @@ class ThreadsController extends Controller
                     "id"=>$content->user_id,
                     "name"=>User::find($content->user_id)->name
                 ],
+                "readed"=>$readed,
                 "lastPost"=>$postInfo->postInfo($content->post_id),
                 "userId"=>$content->user_id,
                 "isPinned"=>$content->is_pinned,

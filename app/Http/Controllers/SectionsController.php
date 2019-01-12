@@ -116,7 +116,8 @@ class SectionsController extends Controller
                 "name"=>$content->name,
                 "image"=>$content->image,
                 "color"=>$content->color,
-                "categoryId"=>$content->category_id
+                "categoryId"=>$content->category_id,
+                "readed"=>false // TODO - Create the function for calculate this
             ];
         }
 
