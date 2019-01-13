@@ -147,6 +147,7 @@ class PostsController extends Controller
                 "threadId"=>$content->thread_id,
                 "threadName"=>Thread::find($content->thread_id)->name,
                 "sectionId" =>Thread::find($content->thread_id)->section_id,
+                "date" => Carbon::parse($content->created_at)->format(Carbon::RFC3339)
             ];
         }
 
