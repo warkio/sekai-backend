@@ -106,7 +106,7 @@ class PostsController extends Controller
         if($r->has("thread-id") && is_numeric($r->input("thread-id"))){
             $posts = $posts->where("thread_id","=",$r->input("thread-id"));
             $validThread = Thread::find($r->input('thread-id'));
-            if($user && $validThread && !$validThread->readedBy($user->id)){
+            if($user && $validThread && !$validThread->isReadBy($user->id)){
                 DB::update(
                     "UPDATE readed_threads SET is_read=true WHERE thread_id=? AND user_id=?",
                     [$r->input("thread-id"), $user->id]

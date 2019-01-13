@@ -9,7 +9,7 @@ class Thread extends Model
 {
     protected $table = "threads";
 
-    public function readedBy($userId){
+    public function isReadBy($userId){
         $exists = DB::table("readed_threads")
             ->where([["thread_id","=",$this->id], ["user_id","=",$userId]])
             ->first();

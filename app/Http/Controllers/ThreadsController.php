@@ -162,7 +162,7 @@ class ThreadsController extends Controller
         foreach($threads as $index=>$content){
             $lastPost = Carbon::parse($postInfo->postInfo($content->post_id)["date"]);
             $thread = Thread::find($content->id);
-            $readed = !$user || $user->created_at > $lastPost? true : $thread->readedBy($user->id);
+            $readed = !$user || $user->created_at > $lastPost? true : $thread->isReadBy($user->id);
             array_push($data["content"], [
                 "id"=>$content->id,
                 "name"=>$content->name,

@@ -109,15 +109,17 @@ class SectionsController extends Controller
             "total" => $total,
             "content" => []
         ];
-
+        $user = Auth::user();
         foreach($sections as $index=>$content){
+            $section = Section::find($content->id);
+            $isRead = !$user? true : $section->isReadBy($user->id);
             $data["content"][$index] = [
                 "id"=>$content->id,
                 "name"=>$content->name,
                 "image"=>$content->image,
                 "color"=>$content->color,
                 "categoryId"=>$content->category_id,
-                "isRead"=>false // TODO - Create the function for calculate this
+                "isRead"=>$isRead
             ];
         }
 
